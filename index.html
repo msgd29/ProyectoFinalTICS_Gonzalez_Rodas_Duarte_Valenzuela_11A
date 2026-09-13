@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProyectoFinalTICS_Gonzalez_Rodas_Duarte_Valenzuela_11A_CentroDeMando</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ========== HUD CROSSHAIR CURSOR ========== -->
+  <div id="hud-cursor">
+    <div class="ring"></div>
+    <div class="cross-h"></div>
+    <div class="cross-v"></div>
+    <div class="dot"></div>
+  </div>
+
+  <!-- ========== PHASE 1: CINEMATIC BOOT SCREEN ========== -->
+  <div id="phase-boot">
+    <div id="boot-header" class="chromatic">
+      ◈ ProyectoFinalTICS_Gonzalez_Rodas_Duarte_Valenzuela_11A_CentroDeMando ◈
+    </div>
+
+    <div id="boot-terminal">
+      <div class="boot-line" data-delay="400">
+        <span class="prefix">[SYS]</span> Initializing TOR Onion Router v9.1.7...
+      </div>
+      <div class="boot-line" data-delay="900">
+        <span class="prefix">[NET]</span> ESTABLISHING SECURE ONION ROUTING...
+        <span class="status-ok">[OK]</span>
+      </div>
+      <div class="boot-line" data-delay="1500">
+        <span class="prefix">[SEC]</span> Spoofing MAC address: <span class="status-warn">██:██:██:██:██:██</span>
+      </div>
+      <div class="boot-line" data-delay="2100">
+        <span class="prefix">[ATK]</span> BYPASSING MILITARY FIREWALLS...
+        <span class="status-ok">[BREACHED]</span>
+      </div>
+      <div class="boot-line" data-delay="2800">
+        <span class="prefix">[CRY]</span> Encryption handshake: AES-256-GCM + ChaCha20...
+        <span class="status-ok">[LOCKED]</span>
+      </div>
+      <div class="boot-line" data-delay="3400">
+        <span class="prefix">[P2P]</span> CONNECTING TO UNDERGROUND NODE...
+        <span class="status-ok">[SYNCED]</span>
+      </div>
+      <div class="boot-line" data-delay="4000">
+        <span class="prefix">[DB]</span> Loading vendor databases from ████████.onion...
+      </div>
+      <div class="boot-line" data-delay="4600">
+        <span class="prefix">[AUTH]</span> Anonymous identity verified. Welcome, <span class="status-ok">UNKNOWN</span>.
+      </div>
+    </div>
+
+    <div id="progress-container">
+      <div id="progress-label">ESTABLISHING SECURE TUNNEL</div>
+      <div id="progress-bar-outer">
+        <div id="progress-bar-inner"></div>
+      </div>
+      <div id="progress-percent">0%</div>
+    </div>
+
+    <button id="enter-btn" class="chromatic">
+      ▶ ENTRAR AL MERCADO NEGRO // CLICK AQUÍ ◀
+    </button>
+  </div>
+
+  <!-- ========== GLITCH TRANSITION OVERLAY ========== -->
+  <div id="glitch-overlay"></div>
+
+  <!-- ========== PHASE 2: MAIN OS INTERFACE ========== -->
+  <div id="phase-os">
+    <!-- TOP BAR -->
+    <div id="topbar">
+      <span class="sys-name chromatic">◈ CENTRO DE MANDO // BLACKMARKET OS v4.7.1</span>
+      <span class="sys-info">SESSION: <span id="session-id">0xDEADBEEF</span></span>
+      <span class="sys-status">● SECURE</span>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div id="main-area">
+      <!-- LEFT PANEL -->
+      <div id="panel-left">
+        <!-- PROFILE -->
+        <div class="panel-section">
+          <div class="section-title">◈ Perfil Operativo</div>
+          <div class="field"><span class="label">ALIAS: </span><span class="value">UNKNOWN</span></div>
+          <div class="field"><span class="label">ID: </span><span class="value" style="font-size:10px;">a7f3█████████</span></div>
+          <div class="field"><span class="label">ANONYMITY: </span><span class="value magenta">99.9%</span></div>
+          <div class="field"><span class="label">STATUS: </span><span class="value">GHOST</span></div>
+        </div>
+
+        <!-- WALLET -->
+        <div class="panel-section">
+          <div class="section-title">◈ Crypto Wallet</div>
+          <div class="field"><span class="label">BALANCE: </span><span class="value magenta">13,337 XMR</span></div>
+          <div class="field"><span class="label">COIN: </span><span class="value">Monero (XMR)</span></div>
+          <div class="field"><span class="label">ADDR: </span><span class="value" style="font-size:9px;word-break:break-all;">4█████████████████</span></div>
+        </div>
+
+        <!-- TELEMETRY -->
+        <div class="panel-section">
+          <div class="section-title">◈ Telemetría</div>
+          <div class="telemetry-bar">
+            <div class="field"><span class="label">PROXY RELAYS: </span></div>
+            <div class="bar-track" id="proxy-bar">[████░░░░] 4</div>
+          </div>
+          <div class="telemetry-bar">
+            <div class="field"><span class="label">ENCRYPTION: </span></div>
+            <div class="bar-track" style="color:var(--magenta-neon);">AES-256 ACTIVE</div>
+          </div>
+          <div class="telemetry-bar">
+            <div class="field"><span class="label">LATENCY: </span></div>
+            <div class="bar-track" id="latency-val">247ms</div>
+          </div>
+          <div class="telemetry-bar">
+            <div class="field"><span class="label">NODES: </span></div>
+            <div class="bar-track" id="node-count">8 / 12 online</div>
+          </div>
+        </div>
+
+        <!-- THREAT LEVEL -->
+        <div class="panel-section">
+          <div class="section-title">◈ Threat Level</div>
+          <div class="field">
+            <span class="label">LEVEL: </span>
+            <span class="value red" id="threat-level">██░░░ LOW</span>
+          </div>
+          <div class="field">
+            <span class="label">TRACE: </span>
+            <span class="value">UNDETECTED</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER PANEL (CONSOLE) -->
+      <div id="panel-center">
+        <div id="console-header">
+          <span class="dot green"></span>
+          <span class="dot yellow"></span>
+          <span class="dot red"></span>
+          <span style="margin-left:10px;">root@blackmarket:~#</span>
+        </div>
+
+        <div id="console-output"></div>
+
+        <div id="help-hint">[?] CONEXIÓN SEGURA. Escribe 'help' para ver comandos disponibles.</div>
+
+        <div id="input-line">
+          <span class="prompt-symbol">▶</span>
+          <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" placeholder="Ingresa un comando...">
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div id="bottombar">
+      <span><span class="active-indicator">●</span> TOR ACTIVE | PROXYCHAINS ENGAGED</span>
+      <span id="clock">00:00:00</span>
+      <span>PACKETS: <span id="packet-count">0</span> | UPLINK: STABLE</span>
+    </div>
+  </div>
+
+  <!-- ========== MARKET MODAL ========== -->
+  <div class="modal-overlay" id="market-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">◈ CONTRABANDO DIGITAL // CLASSIFIED ASSETS</span>
+        <button class="modal-close" onclick="closeModal('market-modal')">[X] CERRAR</button>
+      </div>
+      <div class="modal-body">
+        <!-- ITEM 1: PDF -->
+        <div class="market-item">
+          <div class="item-header">
+            <span class="item-name">📄 DOCUMENTO CLASIFICADO</span>
+            <span class="item-price">◈ 1,200 XMR</span>
+          </div>
+          <div class="item-desc">Archivo filtrado de operaciones encubiertas. Nivel de clasificación: ████ TOP SECRET.</div>
+          <div class="item-tags">
+            <span class="item-tag">PDF</span>
+            <span class="item-tag danger">TOP SECRET</span>
+            <span class="item-tag">GOV-LEAK</span>
+          </div>
+          <button class="view-btn" onclick="openMedia('pdf')">[ VISUALIZAR DOCUMENTO ]</button>
+        </div>
+
+        <!-- ITEM 2: VIDEO -->
+        <div class="market-item">
+          <div class="item-header">
+            <span class="item-name">🎥 GRABACIÓN DE VIGILANCIA</span>
+            <span class="item-price">◈ 3,500 XMR</span>
+          </div>
+          <div class="item-desc">Grabación interceptada de circuito cerrado. Fuente: ██████████ Cam-07.</div>
+          <div class="item-tags">
+            <span class="item-tag">MP4</span>
+            <span class="item-tag danger">CLASSIFIED</span>
+            <span class="item-tag">SURVEILLANCE</span>
+          </div>
+          <button class="view-btn" onclick="openMedia('video')">[ REPRODUCIR VIDEO ]</button>
+        </div>
+
+        <!-- ITEM 3: AUDIO -->
+        <div class="market-item">
+          <div class="item-header">
+            <span class="item-name">📻 RADIO INTERCEPTADA (PODCAST)</span>
+            <span class="item-price">◈ 800 XMR</span>
+          </div>
+          <div class="item-desc">Frecuencia interceptada. Canal militar no autorizado. Contenido: █████████.</div>
+          <div class="item-tags">
+            <span class="item-tag">MP3</span>
+            <span class="item-tag danger">INTERCEPTED</span>
+            <span class="item-tag">COMMS</span>
+          </div>
+          <button class="view-btn" onclick="openMedia('audio')">[ ESCUCHAR AUDIO ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MEDIA VIEWER MODAL ========== -->
+  <div class="modal-overlay" id="media-viewer">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title" id="media-title">◈ VISOR CLASIFICADO</span>
+        <button class="modal-close" onclick="closeModal('media-viewer')">[X] CERRAR</button>
+      </div>
+      <div class="modal-body">
+        <div id="media-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SATELLITE MAP OVERLAY ========== -->
+  <div id="map-overlay">
+    <div id="map-title" class="glow-red chromatic">◈ SATELLITE TRACKING // VENDOR TRACE ◈</div>
+    <canvas id="map-canvas" width="900" height="500"></canvas>
+    <div id="map-status" class="glow-green"></div>
+    <button id="map-close-btn" onclick="closeMap()">[ CERRAR MAPA ]</button>
+  </div>
+
+  <!-- ========== FBI ALERT OVERLAY ========== -->
+  <div id="fbi-alert">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-title glow-red chromatic">FEDERATION TRACE DETECTED</div>
+    <div class="alert-sub">INCOMING TRIANGULATION FROM 3 FEDERAL NODES</div>
+    <div class="alert-details">
+      TRACE ORIGIN: NSA/GCHQ JOINT OPS<br>
+      PROTOCOL: PRISM-7 INTERCEPT<br>
+      STATUS: ACTIVE PURSUIT<br>
+      ESTIMATED LOCK: 00:██:██
+    </div>
+    <button id="burn-btn" onclick="burnDrive()">🔥 BURN DRIVE (CANCELAR ALARMA) 🔥</button>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
