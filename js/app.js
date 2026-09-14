@@ -428,10 +428,13 @@
         mediaTitle.textContent = '◈ DOCUMENTO CLASIFICADO // PDF VIEWER';
         mediaContent.innerHTML =
           '<div style="width:100%;">' +
-          '<embed src="documento.pdf" type="application/pdf" width="100%" height="500px" ' +
-          'style="border:1px solid var(--border-green);background:#111;">' +
+          '<iframe src="documento.pdf" width="100%" height="500px" ' +
+          'style="border:1px solid var(--border-green);background:#111;" ' +
+          'title="Documento Clasificado"></iframe>' +
           '<p style="margin-top:12px;font-size:12px;color:var(--text-dim);text-align:center;">' +
-          '[!] Si el PDF no carga, coloca el archivo <span style="color:var(--magenta-neon);">documento.pdf</span> en el directorio raíz del proyecto.</p>' +
+          '[!] Si el PDF no carga, ' +
+          '<a href="documento.pdf" target="_blank" style="color:var(--magenta-neon);text-decoration:underline;">' +
+          'haz clic aquí para abrirlo en una nueva pestaña</a>.</p>' +
           '</div>';
         break;
 
@@ -460,6 +463,20 @@
           '</audio>' +
           '<p style="margin-top:12px;font-size:12px;color:var(--text-dim);">' +
           '[!] Coloca el archivo <span style="color:var(--magenta-neon);">podcast.mp3</span> en el directorio raíz del proyecto.</p>' +
+          '</div>';
+        break;
+
+      case 'infografia':
+        mediaTitle.textContent = '◈ INFOGRAFÍA CLASIFICADA // PDF VIEWER';
+        mediaContent.innerHTML =
+          '<div style="width:100%;">' +
+          '<iframe src="infografia.pdf" width="100%" height="500px" ' +
+          'style="border:1px solid var(--border-green);background:#111;" ' +
+          'title="Infografía Clasificada"></iframe>' +
+          '<p style="margin-top:12px;font-size:12px;color:var(--text-dim);text-align:center;">' +
+          '[!] Si la infografía no carga, ' +
+          '<a href="infografia.pdf" target="_blank" style="color:var(--magenta-neon);text-decoration:underline;">' +
+          'haz clic aquí para abrirla en una nueva pestaña</a>.</p>' +
           '</div>';
         break;
     }
