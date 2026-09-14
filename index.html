@@ -4,7 +4,1089 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ProyectoFinalTICS_Gonzalez_Rodas_Duarte_Valenzuela_11A_CentroDeMando</title>
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <style>
+/* ============================================================
+   ProyectoFinalTICS_Gonzalez_Rodas_Duarte_Valenzuela_11A_CentroDeMando
+   BLACKMARKET CYBERPUNK - STYLESHEET
+   ============================================================ */
+
+/* --- CSS VARIABLES --- */
+:root {
+  --bg-black: #000000;
+  --green-phosphor: #00ff41;
+  --magenta-neon: #ff00ff;
+  --red-alert: #ff003c;
+  --dark-panel: #0a0a0a;
+  --border-green: #003b0f;
+  --text-dim: #00802180;
+  --scanline-opacity: 0.04;
+}
+
+/* --- RESET & BASE --- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-black);
+  color: var(--green-phosphor);
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* --- SCANLINES OVERLAY --- */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 65, var(--scanline-opacity)) 2px,
+    rgba(0, 255, 65, var(--scanline-opacity)) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* --- NOISE / GRAIN OVERLAY --- */
+body::after {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9997;
+  animation: noiseShift 0.5s steps(5) infinite;
+}
+
+@keyframes noiseShift {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-2%, 3%); }
+  40% { transform: translate(1%, -2%); }
+  60% { transform: translate(-3%, 1%); }
+  80% { transform: translate(2%, -1%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* --- CHROMATIC ABERRATION TEXT --- */
+.chromatic {
+  text-shadow:
+    -1px 0 rgba(255, 0, 255, 0.4),
+    1px 0 rgba(0, 255, 65, 0.4);
+}
+
+/* --- GLOW CLASSES --- */
+.glow-green {
+  text-shadow: 0 0 5px var(--green-phosphor),
+               0 0 10px var(--green-phosphor),
+               0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+.glow-magenta {
+  text-shadow: 0 0 5px var(--magenta-neon),
+               0 0 10px var(--magenta-neon),
+               0 0 20px rgba(255, 0, 255, 0.3);
+}
+
+.glow-red {
+  text-shadow: 0 0 5px var(--red-alert),
+               0 0 10px var(--red-alert),
+               0 0 20px rgba(255, 0, 60, 0.3);
+}
+
+/* --- SCROLLBAR STYLING --- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-green);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-phosphor);
+}
+
+/* ============================================================
+   PHASE 1: CINEMATIC BOOT SCREEN
+   ============================================================ */
+#phase-boot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  background: var(--bg-black);
+  padding: 30px;
+}
+
+#boot-header {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#boot-terminal {
+  width: 100%;
+  max-width: 700px;
+  text-align: left;
+  margin-bottom: 40px;
+}
+
+#boot-terminal .boot-line {
+  opacity: 0;
+  margin-bottom: 8px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  transition: opacity 0.3s ease;
+}
+
+#boot-terminal .boot-line.visible {
+  opacity: 1;
+}
+
+#boot-terminal .boot-line .prefix {
+  color: var(--magenta-neon);
+}
+
+#boot-terminal .boot-line .status-ok {
+  color: var(--green-phosphor);
+  font-weight: bold;
+}
+
+#boot-terminal .boot-line .status-warn {
+  color: #ffaa00;
+}
+
+/* --- PROGRESS BAR --- */
+#progress-container {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 40px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#progress-container.visible {
+  opacity: 1;
+}
+
+#progress-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+
+#progress-bar-outer {
+  width: 100%;
+  height: 20px;
+  border: 1px solid var(--border-green);
+  background: var(--bg-black);
+  position: relative;
+  overflow: hidden;
+}
+
+#progress-bar-inner {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--green-phosphor), var(--magenta-neon));
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px var(--green-phosphor);
+}
+
+#progress-percent {
+  font-size: 16px;
+  margin-top: 8px;
+  text-align: center;
+  color: var(--green-phosphor);
+  font-weight: bold;
+}
+
+/* --- ENTER BUTTON --- */
+#enter-btn {
+  display: none;
+  padding: 20px 50px;
+  font-size: 22px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  color: #fff;
+  background: var(--magenta-neon);
+  border: 3px solid #fff;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  animation: btnPulse 1.5s ease-in-out infinite;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+#enter-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255,255,255,0.15) 50%,
+    transparent 60%
+  );
+  animation: btnShine 3s linear infinite;
+}
+
+@keyframes btnShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+#enter-btn:hover {
+  background: #cc00cc;
+  transform: scale(1.05);
+  box-shadow: 0 0 30px var(--magenta-neon), 0 0 60px rgba(255,0,255,0.3);
+}
+
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 0 15px var(--magenta-neon), 0 0 30px rgba(255,0,255,0.4); }
+  50% { box-shadow: 0 0 25px var(--magenta-neon), 0 0 50px rgba(255,0,255,0.6); }
+}
+
+/* ============================================================
+   GLITCH TRANSITION
+   ============================================================ */
+#glitch-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 5000;
+  background: var(--bg-black);
+}
+
+#glitch-overlay.active {
+  display: block;
+  animation: glitchSequence 1.2s steps(1) forwards;
+}
+
+@keyframes glitchSequence {
+  0%   { background: var(--bg-black); }
+  5%   { background: var(--red-alert); }
+  10%  { background: var(--bg-black); }
+  15%  { background: var(--magenta-neon); }
+  18%  { background: var(--bg-black); }
+  22%  { background: var(--green-phosphor); }
+  25%  { background: var(--bg-black); }
+  30%  { background: var(--red-alert); }
+  33%  { background: var(--bg-black); }
+  40%  { background: rgba(255,0,255,0.5); }
+  45%  { background: var(--bg-black); }
+  55%  { background: rgba(0,255,65,0.3); }
+  60%  { background: var(--bg-black); }
+  70%  { background: rgba(255,0,60,0.3); }
+  75%  { background: var(--bg-black); }
+  100% { background: var(--bg-black); opacity: 0; }
+}
+
+/* ============================================================
+   PHASE 2: MAIN OS INTERFACE
+   ============================================================ */
+#phase-os {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  flex-direction: column;
+}
+
+#phase-os.active {
+  display: flex;
+}
+
+/* --- TOP BAR --- */
+#topbar {
+  height: 36px;
+  background: #050505;
+  border-bottom: 1px solid var(--border-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+#topbar .sys-name {
+  color: var(--magenta-neon);
+  letter-spacing: 2px;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+#topbar .sys-info {
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+#topbar .sys-status {
+  color: var(--green-phosphor);
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* --- MAIN CONTENT AREA --- */
+#main-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* --- LEFT PANEL (PROFILE) --- */
+#panel-left {
+  width: 260px;
+  min-width: 260px;
+  background: var(--dark-panel);
+  border-right: 1px solid var(--border-green);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.panel-section {
+  border: 1px solid var(--border-green);
+  padding: 10px;
+  position: relative;
+}
+
+.panel-section .section-title {
+  font-size: 10px;
+  color: var(--magenta-neon);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.panel-section .field {
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.panel-section .field .label {
+  color: var(--text-dim);
+}
+
+.panel-section .field .value {
+  color: var(--green-phosphor);
+  font-weight: bold;
+}
+
+.panel-section .field .value.magenta {
+  color: var(--magenta-neon);
+}
+
+.panel-section .field .value.red {
+  color: var(--red-alert);
+}
+
+/* --- TELEMETRY BARS --- */
+.telemetry-bar {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.telemetry-bar .bar-track {
+  display: inline-block;
+  color: var(--green-phosphor);
+  letter-spacing: 1px;
+}
+
+/* --- CENTRAL CONSOLE --- */
+#panel-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-black);
+  position: relative;
+}
+
+#console-header {
+  height: 30px;
+  background: #050505;
+  border-bottom: 1px solid var(--border-green);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+#console-header .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  display: inline-block;
+}
+
+#console-header .dot.green { background: var(--green-phosphor); }
+#console-header .dot.yellow { background: #ffaa00; }
+#console-header .dot.red { background: var(--red-alert); }
+
+#console-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+#console-output .line {
+  margin-bottom: 2px;
+  word-wrap: break-word;
+}
+
+#console-output .line.cmd-input {
+  color: var(--green-phosphor);
+}
+
+#console-output .line.cmd-output {
+  color: #00cc33;
+}
+
+#console-output .line.error {
+  color: var(--red-alert);
+}
+
+#console-output .line.system {
+  color: var(--magenta-neon);
+}
+
+#console-output .line.dim {
+  color: var(--text-dim);
+}
+
+#console-output .line .censored {
+  background: var(--green-phosphor);
+  color: var(--green-phosphor);
+  padding: 0 4px;
+  user-select: none;
+}
+
+/* --- HELP BLINKER --- */
+#help-hint {
+  padding: 8px 15px;
+  font-size: 12px;
+  color: var(--magenta-neon);
+  border-top: 1px solid var(--border-green);
+  animation: blink 1.5s steps(1) infinite;
+  flex-shrink: 0;
+}
+
+/* --- INPUT LINE --- */
+#input-line {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-top: 1px solid var(--border-green);
+  background: #050505;
+  flex-shrink: 0;
+}
+
+#input-line .prompt-symbol {
+  color: var(--magenta-neon);
+  font-weight: bold;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+#cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--green-phosphor);
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  caret-color: var(--green-phosphor);
+}
+
+/* --- BOTTOM STATUS BAR --- */
+#bottombar {
+  height: 28px;
+  background: #050505;
+  border-top: 1px solid var(--border-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  font-size: 10px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+#bottombar .active-indicator {
+  color: var(--green-phosphor);
+}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 3000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-box {
+  width: 90%;
+  max-width: 850px;
+  max-height: 85vh;
+  background: #0a0a0a;
+  border: 1px solid var(--magenta-neon);
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-box .modal-header {
+  padding: 12px 18px;
+  background: #111;
+  border-bottom: 1px solid var(--border-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-box .modal-header .modal-title {
+  color: var(--magenta-neon);
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.modal-box .modal-header .modal-close {
+  color: var(--red-alert);
+  cursor: pointer;
+  font-size: 18px;
+  background: none;
+  border: 1px solid var(--red-alert);
+  padding: 2px 10px;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s;
+}
+
+.modal-box .modal-header .modal-close:hover {
+  background: var(--red-alert);
+  color: #fff;
+}
+
+.modal-box .modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* --- MARKET ITEMS --- */
+.market-item {
+  border: 1px solid var(--border-green);
+  margin-bottom: 18px;
+  padding: 15px;
+  position: relative;
+  transition: border-color 0.3s;
+}
+
+.market-item:hover {
+  border-color: var(--magenta-neon);
+}
+
+.market-item .item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.market-item .item-name {
+  color: var(--magenta-neon);
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.market-item .item-price {
+  color: var(--green-phosphor);
+  font-size: 12px;
+}
+
+.market-item .item-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.market-item .item-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.market-item .item-tag {
+  font-size: 9px;
+  padding: 2px 8px;
+  border: 1px solid var(--border-green);
+  color: var(--green-phosphor);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.market-item .item-tag.danger {
+  border-color: var(--red-alert);
+  color: var(--red-alert);
+}
+
+.market-item .view-btn {
+  display: inline-block;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  color: #fff;
+  background: transparent;
+  border: 1px solid var(--magenta-neon);
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+
+.market-item .view-btn:hover {
+  background: var(--magenta-neon);
+  color: #000;
+}
+
+/* --- MEDIA VIEWER MODAL --- */
+#media-viewer .modal-box {
+  max-width: 900px;
+}
+
+#media-content {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#media-content iframe,
+#media-content embed {
+  width: 100%;
+  height: 500px;
+  border: 1px solid var(--border-green);
+  background: #111;
+}
+
+#media-content video {
+  width: 100%;
+  max-height: 450px;
+  background: #000;
+  border: 1px solid var(--border-green);
+  outline: none;
+}
+
+#media-content audio {
+  width: 100%;
+  outline: none;
+  filter: hue-rotate(120deg) brightness(1.5);
+}
+
+/* ============================================================
+   PHASE 4: SATELLITE MAP
+   ============================================================ */
+#map-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 4000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#map-overlay.active {
+  display: flex;
+}
+
+#map-title {
+  color: var(--red-alert);
+  font-size: 16px;
+  letter-spacing: 3px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  animation: blink 1s steps(1) infinite;
+}
+
+#map-canvas {
+  border: 1px solid var(--border-green);
+  background: #050505;
+  max-width: 95%;
+  max-height: 60vh;
+}
+
+#map-status {
+  margin-top: 15px;
+  font-size: 13px;
+  color: var(--green-phosphor);
+  text-align: center;
+  min-height: 60px;
+}
+
+#map-close-btn {
+  margin-top: 15px;
+  padding: 10px 30px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--magenta-neon);
+  background: transparent;
+  border: 1px solid var(--magenta-neon);
+  cursor: pointer;
+  letter-spacing: 2px;
+  display: none;
+  transition: all 0.2s;
+}
+
+#map-close-btn:hover {
+  background: var(--magenta-neon);
+  color: #000;
+}
+
+/* ============================================================
+   FBI ALERT
+   ============================================================ */
+#fbi-alert {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 6000;
+  background: rgba(0, 0, 0, 0.96);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fbiFlash 0.6s steps(1) infinite;
+}
+
+#fbi-alert.active {
+  display: flex;
+}
+
+@keyframes fbiFlash {
+  0%, 49% { border: 5px solid var(--red-alert); }
+  50%, 100% { border: 5px solid transparent; }
+}
+
+#fbi-alert .alert-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: blink 0.5s steps(1) infinite;
+}
+
+#fbi-alert .alert-title {
+  color: var(--red-alert);
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#fbi-alert .alert-sub {
+  color: #ff6666;
+  font-size: 14px;
+  margin-bottom: 30px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+#fbi-alert .alert-details {
+  color: var(--text-dim);
+  font-size: 11px;
+  margin-bottom: 30px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+#burn-btn {
+  padding: 18px 50px;
+  font-size: 20px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  color: #fff;
+  background: var(--red-alert);
+  border: 3px solid #fff;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  animation: btnPulseRed 1s ease-in-out infinite;
+  transition: all 0.2s;
+}
+
+#burn-btn:hover {
+  background: #cc0030;
+  transform: scale(1.05);
+}
+
+@keyframes btnPulseRed {
+  0%, 100% { box-shadow: 0 0 15px var(--red-alert), 0 0 30px rgba(255,0,60,0.4); }
+  50% { box-shadow: 0 0 25px var(--red-alert), 0 0 50px rgba(255,0,60,0.6); }
+}
+
+/* ============================================================
+   HUD CROSSHAIR CURSOR
+   ============================================================ */
+#hud-cursor {
+  display: none;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+}
+
+#hud-cursor .ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 30px; height: 30px;
+  border: 1px solid var(--green-phosphor);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.6;
+}
+
+#hud-cursor .cross-h,
+#hud-cursor .cross-v {
+  position: absolute;
+  background: var(--green-phosphor);
+  opacity: 0.5;
+}
+
+#hud-cursor .cross-h {
+  width: 40px; height: 1px;
+  top: 50%; left: 0;
+  transform: translateY(-50%);
+}
+
+#hud-cursor .cross-v {
+  width: 1px; height: 40px;
+  left: 50%; top: 0;
+  transform: translateX(-50%);
+}
+
+#hud-cursor .dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 4px; height: 4px;
+  background: var(--red-alert);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* When HUD cursor is active, hide system cursor */
+body.hud-active {
+  cursor: none;
+}
+
+body.hud-active #cmd-input {
+  cursor: none;
+}
+
+body.hud-active button,
+body.hud-active .view-btn,
+body.hud-active .modal-close {
+  cursor: none;
+}
+
+/* ============================================================
+   DECLASSIFIED / LIGHT MODE
+   ============================================================ */
+body.declassified {
+  background: #f5f5f0 !important;
+  color: #111 !important;
+}
+
+body.declassified::before {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.02) 2px,
+    rgba(0, 0, 0, 0.02) 4px
+  ) !important;
+}
+
+body.declassified::after {
+  display: none !important;
+}
+
+body.declassified #topbar,
+body.declassified #console-header,
+body.declassified #input-line,
+body.declassified #bottombar,
+body.declassified #panel-left {
+  background: #e8e8e0 !important;
+  border-color: #999 !important;
+}
+
+body.declassified #panel-center,
+body.declassified #console-output {
+  background: #f5f5f0 !important;
+}
+
+body.declassified .panel-section {
+  border-color: #999 !important;
+}
+
+body.declassified #console-output .line,
+body.declassified #console-output .line.cmd-input,
+body.declassified #console-output .line.cmd-output,
+body.declassified .panel-section .field .value {
+  color: #111 !important;
+  text-shadow: none !important;
+}
+
+body.declassified #cmd-input {
+  color: #111 !important;
+}
+
+body.declassified .panel-section .section-title,
+body.declassified #topbar .sys-name {
+  color: #900 !important;
+}
+
+body.declassified .panel-section .field .label {
+  color: #555 !important;
+}
+
+body.declassified #help-hint {
+  color: #900 !important;
+}
+
+body.declassified .modal-box {
+  background: #f5f5f0 !important;
+  border-color: #900 !important;
+}
+
+body.declassified .modal-box .modal-header {
+  background: #e8e8e0 !important;
+}
+
+body.declassified .modal-box .modal-title {
+  color: #900 !important;
+}
+
+body.declassified .market-item {
+  border-color: #999 !important;
+}
+
+body.declassified .market-item .item-name {
+  color: #900 !important;
+}
+
+body.declassified .market-item .item-desc,
+body.declassified .market-item .item-price {
+  color: #333 !important;
+}
+
+/* DECLASSIFIED STAMP */
+body.declassified::before {
+  content: 'DECLASSIFIED' !important;
+  position: fixed !important;
+  top: 50% !important; left: 50% !important;
+  transform: translate(-50%, -50%) rotate(-30deg) !important;
+  font-size: 120px !important;
+  font-weight: bold !important;
+  color: rgba(200, 0, 0, 0.08) !important;
+  letter-spacing: 20px !important;
+  pointer-events: none !important;
+  z-index: 9998 !important;
+  width: auto !important; height: auto !important;
+  background: none !important;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typeFlicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  #panel-left {
+    display: none;
+  }
+
+  #enter-btn {
+    font-size: 16px;
+    padding: 15px 30px;
+  }
+
+  #fbi-alert .alert-title {
+    font-size: 20px;
+  }
+
+  #burn-btn {
+    font-size: 16px;
+    padding: 14px 35px;
+  }
+}
+  </style>
 </head>
 <body>
 
@@ -284,6 +1366,895 @@
     <button id="burn-btn" onclick="burnDrive()">🔥 BURN DRIVE (CANCELAR ALARMA) 🔥</button>
   </div>
 
-  <script src="js/app.js?v=3"></script>
+
+  <script>
+/* ============================================================
+   ProyectoFinalTICS_Gonzalez_Rodas_Duarte_Valenzuela_11A_CentroDeMando
+   BLACKMARKET CYBERPUNK - APPLICATION LOGIC
+   ============================================================ */
+
+(function () {
+  'use strict';
+
+  // ==================== AUDIO ENGINE (Web Audio API) ====================
+  var audioCtx = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        console.warn('Web Audio API not supported');
+      }
+    }
+  }
+
+  function playBeep(freq, duration, type, volume) {
+    if (!audioCtx) return;
+    try {
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.type = type || 'square';
+      osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volume || 0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (duration || 0.1));
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + (duration || 0.1));
+    } catch (e) { /* silent fail */ }
+  }
+
+  function playKeyClick() {
+    var freqs = [800, 1000, 1200, 900, 1100];
+    playBeep(freqs[Math.floor(Math.random() * freqs.length)], 0.04, 'square', 0.04);
+  }
+
+  function playEnterSound() {
+    playBeep(200, 0.08, 'sawtooth', 0.06);
+    setTimeout(function () { playBeep(400, 0.06, 'square', 0.05); }, 80);
+  }
+
+  function playAlertSound() {
+    playBeep(300, 0.3, 'sawtooth', 0.12);
+    setTimeout(function () { playBeep(200, 0.3, 'sawtooth', 0.12); }, 300);
+    setTimeout(function () { playBeep(300, 0.3, 'sawtooth', 0.12); }, 600);
+  }
+
+  function playGlitchSound() {
+    for (var i = 0; i < 8; i++) {
+      (function (idx) {
+        setTimeout(function () {
+          playBeep(
+            100 + Math.random() * 2000,
+            0.05 + Math.random() * 0.1,
+            ['square', 'sawtooth', 'triangle'][Math.floor(Math.random() * 3)],
+            0.06
+          );
+        }, idx * 50);
+      })(i);
+    }
+  }
+
+  function playBootBeep() {
+    playBeep(1200, 0.06, 'sine', 0.05);
+  }
+
+  function playMapPing() {
+    playBeep(1800, 0.15, 'sine', 0.06);
+    setTimeout(function () { playBeep(2200, 0.1, 'sine', 0.04); }, 100);
+  }
+
+  function playRadioStatic() {
+    if (!audioCtx) return;
+    try {
+      var bufferSize = audioCtx.sampleRate * 0.3;
+      var buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      var data = buffer.getChannelData(0);
+      for (var i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.03;
+      }
+      var source = audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioCtx.destination);
+      source.start();
+    } catch (e) { /* silent fail */ }
+  }
+
+  // ==================== PHASE 1: BOOT CINEMATIC ====================
+  var bootLines = document.querySelectorAll('#boot-terminal .boot-line');
+  var progressContainer = document.getElementById('progress-container');
+  var progressBarInner = document.getElementById('progress-bar-inner');
+  var progressPercent = document.getElementById('progress-percent');
+  var enterBtn = document.getElementById('enter-btn');
+  var phaseBoot = document.getElementById('phase-boot');
+  var glitchOverlay = document.getElementById('glitch-overlay');
+  var phaseOS = document.getElementById('phase-os');
+
+  function runBootSequence() {
+    bootLines.forEach(function (line) {
+      var delay = parseInt(line.getAttribute('data-delay'), 10) || 0;
+      setTimeout(function () {
+        line.classList.add('visible');
+        playBootBeep();
+      }, delay);
+    });
+
+    var lastDelay = 0;
+    bootLines.forEach(function (line) {
+      var d = parseInt(line.getAttribute('data-delay'), 10) || 0;
+      if (d > lastDelay) lastDelay = d;
+    });
+
+    setTimeout(function () {
+      progressContainer.classList.add('visible');
+      animateProgress();
+    }, lastDelay + 600);
+  }
+
+  function animateProgress() {
+    var progress = 0;
+    var interval = setInterval(function () {
+      progress += Math.random() * 3 + 0.5;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        progressBarInner.style.width = '100%';
+        progressPercent.textContent = '100%';
+        playRadioStatic();
+        setTimeout(showEnterButton, 500);
+        return;
+      }
+      progressBarInner.style.width = progress.toFixed(1) + '%';
+      progressPercent.textContent = Math.floor(progress) + '%';
+    }, 60);
+  }
+
+  function showEnterButton() {
+    enterBtn.style.display = 'inline-block';
+    enterBtn.style.animation = 'btnPulse 1.5s ease-in-out infinite, fadeIn 0.5s ease';
+    playBeep(600, 0.2, 'sine', 0.08);
+  }
+
+  enterBtn.addEventListener('click', function () {
+    initAudio();
+    playGlitchSound();
+    glitchOverlay.classList.add('active');
+    setTimeout(function () {
+      phaseBoot.style.display = 'none';
+      glitchOverlay.classList.remove('active');
+      glitchOverlay.style.display = 'none';
+      phaseOS.classList.add('active');
+      initOS();
+    }, 1200);
+  });
+
+  // ==================== PHASE 2: OS INITIALIZATION ====================
+  var consoleOutput = document.getElementById('console-output');
+  var cmdInput = document.getElementById('cmd-input');
+  var clockEl = document.getElementById('clock');
+  var packetCount = document.getElementById('packet-count');
+  var proxyBar = document.getElementById('proxy-bar');
+  var latencyVal = document.getElementById('latency-val');
+  var nodeCount = document.getElementById('node-count');
+  var threatLevel = document.getElementById('threat-level');
+  var sessionId = document.getElementById('session-id');
+  var hudCursor = document.getElementById('hud-cursor');
+
+  var fbiTimer = null;
+  var packets = 0;
+  var osActive = false;
+
+  function initOS() {
+    osActive = true;
+    generateSessionId();
+    printSystemLine('BLACKMARKET OS v4.7.1 // CENTRO DE MANDO');
+    printSystemLine('═══════════════════════════════════════════════');
+    printDimLine('  Secure session established. All traffic routed through TOR.');
+    printDimLine('  Type "help" for available commands.');
+    printSystemLine('═══════════════════════════════════════════════');
+    printLine('');
+
+    cmdInput.focus();
+    startClock();
+    startPacketCounter();
+    startTelemetryUpdates();
+    enableHUDCursor();
+
+    // FBI trace at 45 seconds
+    fbiTimer = setTimeout(triggerFBIAlert, 45000);
+  }
+
+  function generateSessionId() {
+    var hex = '0123456789ABCDEF';
+    var id = '0x';
+    for (var i = 0; i < 8; i++) {
+      id += hex[Math.floor(Math.random() * 16)];
+    }
+    sessionId.textContent = id;
+  }
+
+  // ==================== CONSOLE OUTPUT ====================
+  function printLine(text, className) {
+    var div = document.createElement('div');
+    div.className = 'line' + (className ? ' ' + className : '');
+    div.innerHTML = text;
+    consoleOutput.appendChild(div);
+    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+  }
+
+  function printSystemLine(text) {
+    printLine(text, 'system');
+  }
+
+  function printDimLine(text) {
+    printLine(text, 'dim');
+  }
+
+  function printErrorLine(text) {
+    printLine(text, 'error');
+  }
+
+  function printOutputLine(text) {
+    printLine(text, 'cmd-output');
+  }
+
+  function typewriterPrint(text, className, callback) {
+    var div = document.createElement('div');
+    div.className = 'line' + (className ? ' ' + className : '');
+    consoleOutput.appendChild(div);
+
+    var idx = 0;
+    var interval = setInterval(function () {
+      if (idx < text.length) {
+        div.textContent += text[idx];
+        idx++;
+        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      } else {
+        clearInterval(interval);
+        if (callback) callback();
+      }
+    }, 20);
+  }
+
+  // ==================== COMMAND PROCESSING ====================
+  cmdInput.addEventListener('keydown', function (e) {
+    playKeyClick();
+    if (e.key === 'Enter') {
+      var val = cmdInput.value.trim().toLowerCase();
+      cmdInput.value = '';
+
+      if (!val) return;
+
+      playEnterSound();
+      printLine('<span style="color:var(--magenta-neon);">▶</span> ' + escapeHTML(val), 'cmd-input');
+      processCommand(val);
+    }
+  });
+
+  // Click sound on any click
+  document.addEventListener('click', function () {
+    initAudio();
+    playBeep(1500, 0.03, 'sine', 0.03);
+  });
+
+  function escapeHTML(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function processCommand(cmd) {
+    switch (cmd) {
+      case 'help':
+        cmdHelp();
+        break;
+      case 'clear':
+        cmdClear();
+        break;
+      case 'track':
+        cmdTrack();
+        break;
+      case 'team':
+      case 'whoami':
+        cmdTeam();
+        break;
+      case 'declassify':
+        cmdDeclassify();
+        break;
+      case 'market':
+        cmdMarket();
+        break;
+      default:
+        printErrorLine('[ERROR] Comando no reconocido: "' + escapeHTML(cmd) + '"');
+        printDimLine('  Escribe "help" para ver la lista de comandos.');
+        break;
+    }
+  }
+
+  // --- HELP ---
+  function cmdHelp() {
+    printSystemLine('╔══════════════════════════════════════════════╗');
+    printSystemLine('║       BLACKMARKET OS // COMMAND REFERENCE    ║');
+    printSystemLine('╚══════════════════════════════════════════════╝');
+    printLine('');
+    var commands = [
+      ['help', 'Muestra esta lista de comandos'],
+      ['clear', 'Limpia la consola'],
+      ['market', 'Abre el mercado de contrabando digital'],
+      ['team', 'Muestra los operativos / vendedores'],
+      ['whoami', 'Alias de "team"'],
+      ['track', 'Inicia rastreo satelital inverso'],
+      ['declassify', 'Desclasifica archivos (Light Mode)']
+    ];
+    commands.forEach(function (c) {
+      printOutputLine('  <span style="color:var(--magenta-neon);font-weight:bold;">' + c[0].padEnd(14) + '</span>' + c[1]);
+    });
+    printLine('');
+    printDimLine('  ████ Algunos comandos pueden activar protocolos ocultos ████');
+  }
+
+  // --- CLEAR ---
+  function cmdClear() {
+    consoleOutput.innerHTML = '';
+    printSystemLine('Console cleared. Ready.');
+  }
+
+  // --- TEAM / WHOAMI ---
+  function cmdTeam() {
+    printSystemLine('╔══════════════════════════════════════════════╗');
+    printSystemLine('║       OPERATIVOS // VENDOR ROSTER            ║');
+    printSystemLine('╚══════════════════════════════════════════════╝');
+    printLine('');
+
+    var team = [
+      { name: 'Manuel González', alias: 'PHANTOM', role: 'Lead Infiltrator', status: 'ACTIVE' },
+      { name: 'José Rodas', alias: 'CIPHER', role: 'Crypto Analyst', status: 'ACTIVE' },
+      { name: 'Pablo Duarte', alias: 'SPECTER', role: 'Network Architect', status: 'ACTIVE' },
+      { name: 'Adrián Valenzuela', alias: 'VORTEX', role: 'Data Extractor', status: 'ACTIVE' }
+    ];
+
+    team.forEach(function (t, i) {
+      printOutputLine(
+        '  <span style="color:var(--magenta-neon);">[' + (i + 1) + ']</span> ' +
+        '<span style="color:var(--green-phosphor);font-weight:bold;">' + t.name + '</span>'
+      );
+      printDimLine('      ALIAS: ' + t.alias + ' | ROLE: ' + t.role + ' | STATUS: ' + t.status);
+    });
+
+    printLine('');
+    printDimLine('  Clase 11A - Colegio Capouilliez');
+    printDimLine('  ████ IDENTIDADES VERIFICADAS POR EL SISTEMA ████');
+  }
+
+  // --- MARKET ---
+  function cmdMarket() {
+    printSystemLine('[MARKET] Abriendo mercado de contrabando digital...');
+    playRadioStatic();
+    setTimeout(function () {
+      openModal('market-modal');
+    }, 400);
+  }
+
+  // --- DECLASSIFY ---
+  function cmdDeclassify() {
+    var isDeclassified = document.body.classList.contains('declassified');
+    if (isDeclassified) {
+      document.body.classList.remove('declassified');
+      printSystemLine('[CLASSIFY] Documentos RE-CLASIFICADOS. Modo oscuro restaurado.');
+      playBeep(400, 0.15, 'square', 0.06);
+    } else {
+      printSystemLine('[DECLASSIFY] Desclasificando todos los archivos...');
+      printOutputLine('  Nivel de seguridad: ████ → PÚBLICO');
+      playBeep(1000, 0.2, 'sine', 0.08);
+      setTimeout(function () {
+        document.body.classList.add('declassified');
+        printSystemLine('[DECLASSIFY] Modo DECLASSIFIED activado. Escribe "declassify" de nuevo para revertir.');
+      }, 600);
+    }
+  }
+
+  // --- TRACK ---
+  function cmdTrack() {
+    printSystemLine('[TRACK] Iniciando rastreo satelital inverso...');
+    printDimLine('  Conectando con nodos de espionaje...');
+    playRadioStatic();
+    setTimeout(function () {
+      openMap();
+    }, 800);
+  }
+
+  // ==================== MODALS ====================
+  function openModal(id) {
+    var modal = document.getElementById(id);
+    if (modal) {
+      modal.classList.add('active');
+      playBeep(600, 0.1, 'sine', 0.05);
+    }
+  }
+
+  function closeModal(id) {
+    var modal = document.getElementById(id);
+    if (modal) {
+      modal.classList.remove('active');
+      playBeep(300, 0.08, 'sine', 0.04);
+    }
+    cmdInput.focus();
+  }
+
+  // Make closeModal globally accessible
+  window.closeModal = closeModal;
+
+  // ==================== MEDIA VIEWER ====================
+  function openMedia(type) {
+    var mediaContent = document.getElementById('media-content');
+    var mediaTitle = document.getElementById('media-title');
+
+    mediaContent.innerHTML = '';
+    playBeep(800, 0.1, 'sine', 0.05);
+
+    switch (type) {
+      case 'pdf':
+        mediaTitle.textContent = '◈ DOCUMENTO CLASIFICADO // PDF VIEWER';
+        mediaContent.innerHTML =
+          '<div style="width:100%;">' +
+          '<iframe src="documento.pdf" width="100%" height="500px" ' +
+          'style="border:1px solid var(--border-green);background:#111;" ' +
+          'title="Documento Clasificado"></iframe>' +
+          '<p style="margin-top:12px;font-size:12px;color:var(--text-dim);text-align:center;">' +
+          '[!] Si el PDF no carga, ' +
+          '<a href="documento.pdf" target="_blank" style="color:var(--magenta-neon);text-decoration:underline;">' +
+          'haz clic aquí para abrirlo en una nueva pestaña</a>.</p>' +
+          '</div>';
+        break;
+
+      case 'video':
+        mediaTitle.textContent = '◈ GRABACIÓN DE VIGILANCIA // VIDEO PLAYER';
+        mediaContent.innerHTML =
+          '<div style="width:100%;">' +
+          '<video controls preload="metadata" style="width:100%;max-height:450px;background:#000;border:1px solid var(--border-green);outline:none;">' +
+          '<source src="video.mp4" type="video/mp4">' +
+          'Tu navegador no soporta la reproducción de video HTML5.' +
+          '</video>' +
+          '<p style="margin-top:12px;font-size:12px;color:var(--text-dim);text-align:center;">' +
+          '[!] Coloca el archivo <span style="color:var(--magenta-neon);">video.mp4</span> en el directorio raíz del proyecto.</p>' +
+          '</div>';
+        break;
+
+      case 'audio':
+        mediaTitle.textContent = '◈ RADIO INTERCEPTADA // AUDIO PLAYER';
+        mediaContent.innerHTML =
+          '<div style="width:100%;text-align:center;padding:40px 0;">' +
+          '<div style="font-size:60px;margin-bottom:20px;">📻</div>' +
+          '<div style="color:var(--magenta-neon);font-size:14px;letter-spacing:2px;margin-bottom:20px;">FRECUENCIA INTERCEPTADA</div>' +
+          '<audio controls preload="metadata" style="width:100%;outline:none;filter:hue-rotate(120deg) brightness(1.5);">' +
+          '<source src="podcast.mp3" type="audio/mpeg">' +
+          'Tu navegador no soporta la reproducción de audio HTML5.' +
+          '</audio>' +
+          '<p style="margin-top:12px;font-size:12px;color:var(--text-dim);">' +
+          '[!] Coloca el archivo <span style="color:var(--magenta-neon);">podcast.mp3</span> en el directorio raíz del proyecto.</p>' +
+          '</div>';
+        break;
+
+      case 'infografia':
+        mediaTitle.textContent = '◈ INFOGRAFÍA CLASIFICADA // PDF VIEWER';
+        mediaContent.innerHTML =
+          '<div style="width:100%;">' +
+          '<iframe src="infografia.pdf" width="100%" height="500px" ' +
+          'style="border:1px solid var(--border-green);background:#111;" ' +
+          'title="Infografía Clasificada"></iframe>' +
+          '<p style="margin-top:12px;font-size:12px;color:var(--text-dim);text-align:center;">' +
+          '[!] Si la infografía no carga, ' +
+          '<a href="infografia.pdf" target="_blank" style="color:var(--magenta-neon);text-decoration:underline;">' +
+          'haz clic aquí para abrirla en una nueva pestaña</a>.</p>' +
+          '</div>';
+        break;
+
+      case 'imagen':
+        mediaTitle.textContent = '◈ IMAGEN CLASIFICADA // PHOTO VIEWER';
+        mediaContent.innerHTML =
+          '<div style="width:100%;text-align:center;">' +
+          '<img src="imagen.png" alt="Imagen Clasificada" ' +
+          'style="max-width:100%;max-height:450px;border:1px solid var(--border-green);' +
+          'box-shadow:0 0 20px rgba(0,255,65,0.15);" ' +
+          'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">' +
+          '<p style="display:none;margin-top:20px;font-size:14px;color:var(--red-alert);">' +
+          '[ERROR] Imagen no encontrada. Coloca el archivo <span style="color:var(--magenta-neon);">imagen.png</span> en el directorio raíz.</p>' +
+          '<p style="margin-top:12px;font-size:12px;color:var(--text-dim);">' +
+          '[!] Si la imagen no carga, ' +
+          '<a href="imagen.png" target="_blank" style="color:var(--magenta-neon);text-decoration:underline;">' +
+          'haz clic aquí para abrirla en una nueva pestaña</a>.</p>' +
+          '</div>';
+        break;
+    }
+
+    closeModal('market-modal');
+    setTimeout(function () {
+      openModal('media-viewer');
+    }, 200);
+  }
+
+  window.openMedia = openMedia;
+
+  // ==================== PHASE 3: HUD CURSOR & TELEMETRY ====================
+  function enableHUDCursor() {
+    document.body.classList.add('hud-active');
+    hudCursor.style.display = 'block';
+
+    document.addEventListener('mousemove', function (e) {
+      hudCursor.style.left = e.clientX + 'px';
+      hudCursor.style.top = e.clientY + 'px';
+    });
+  }
+
+  function startTelemetryUpdates() {
+    setInterval(function () {
+      // Update proxy bar
+      var proxyCount = Math.floor(Math.random() * 5) + 4;
+      var filled = '';
+      var empty = '';
+      for (var i = 0; i < proxyCount; i++) filled += '█';
+      for (var j = proxyCount; j < 8; j++) empty += '░';
+      proxyBar.textContent = '[' + filled + empty + '] ' + proxyCount;
+
+      // Update latency
+      var lat = Math.floor(Math.random() * 400) + 80;
+      latencyVal.textContent = lat + 'ms';
+      latencyVal.style.color = lat > 300 ? 'var(--red-alert)' : 'var(--green-phosphor)';
+
+      // Update node count
+      var onlineNodes = Math.floor(Math.random() * 5) + 8;
+      nodeCount.textContent = onlineNodes + ' / 12 online';
+    }, 2500);
+  }
+
+  function startClock() {
+    function updateClock() {
+      var now = new Date();
+      var h = String(now.getHours()).padStart(2, '0');
+      var m = String(now.getMinutes()).padStart(2, '0');
+      var s = String(now.getSeconds()).padStart(2, '0');
+      clockEl.textContent = h + ':' + m + ':' + s;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+
+  function startPacketCounter() {
+    setInterval(function () {
+      packets += Math.floor(Math.random() * 50) + 10;
+      packetCount.textContent = packets.toLocaleString();
+    }, 800);
+  }
+
+  // ==================== PHASE 4: SATELLITE MAP ====================
+  var mapOverlay = document.getElementById('map-overlay');
+  var mapCanvas = document.getElementById('map-canvas');
+  var mapStatus = document.getElementById('map-status');
+  var mapCloseBtn = document.getElementById('map-close-btn');
+  var mapCtx = mapCanvas.getContext('2d');
+
+  // Simplified world map coordinates (continental outlines)
+  var continents = [
+    // North America
+    [
+      [150, 80], [130, 100], [110, 130], [100, 160], [120, 180],
+      [140, 200], [160, 210], [180, 200], [210, 220], [230, 240],
+      [240, 250], [230, 260], [220, 250], [200, 230], [180, 220],
+      [160, 230], [150, 250], [160, 260], [200, 270], [220, 280],
+      [250, 280], [260, 260], [250, 240], [260, 220], [280, 200],
+      [290, 180], [280, 160], [260, 140], [240, 120], [220, 100],
+      [200, 90], [180, 80], [160, 75]
+    ],
+    // South America
+    [
+      [240, 280], [230, 300], [220, 320], [230, 340], [240, 360],
+      [250, 380], [260, 400], [270, 410], [280, 400], [290, 380],
+      [300, 360], [310, 340], [310, 320], [300, 300], [280, 290],
+      [260, 280]
+    ],
+    // Europe
+    [
+      [420, 80], [400, 100], [410, 120], [430, 140], [440, 160],
+      [460, 160], [480, 150], [500, 140], [510, 130], [500, 110],
+      [490, 100], [470, 90], [450, 80]
+    ],
+    // Africa
+    [
+      [420, 180], [400, 200], [410, 230], [420, 260], [430, 290],
+      [440, 320], [460, 350], [480, 370], [500, 360], [520, 340],
+      [530, 310], [530, 280], [520, 250], [510, 220], [500, 200],
+      [480, 180], [450, 170]
+    ],
+    // Asia
+    [
+      [510, 80], [530, 70], [560, 60], [600, 55], [640, 60],
+      [680, 70], [720, 80], [760, 100], [780, 120], [790, 150],
+      [780, 180], [760, 200], [730, 210], [700, 220], [670, 210],
+      [640, 200], [610, 190], [580, 180], [550, 170], [530, 160],
+      [520, 140], [510, 120], [505, 100]
+    ],
+    // Australia
+    [
+      [720, 320], [700, 340], [710, 360], [730, 380], [760, 390],
+      [790, 380], [800, 360], [790, 340], [770, 320], [750, 310]
+    ]
+  ];
+
+  // City nodes
+  var cities = [
+    { name: 'TOKIO', x: 770, y: 155, color: '#00ff41' },
+    { name: 'MOSCÚ', x: 570, y: 90, color: '#00ff41' },
+    { name: 'BERLÍN', x: 465, y: 110, color: '#00ff41' },
+    { name: 'NEW YORK', x: 245, y: 150, color: '#ffaa00' },
+    { name: 'LONDON', x: 430, y: 105, color: '#ffaa00' },
+    { name: 'GUATEMALA', x: 200, y: 245, color: '#ff00ff' }
+  ];
+
+  function openMap() {
+    mapOverlay.classList.add('active');
+    mapCloseBtn.style.display = 'none';
+    mapStatus.innerHTML = '<span style="color:var(--magenta-neon);">Cargando datos satelitales...</span>';
+    playMapPing();
+    drawMap();
+  }
+
+  function closeMap() {
+    mapOverlay.classList.remove('active');
+    cmdInput.focus();
+  }
+
+  window.closeMap = closeMap;
+
+  function drawMap() {
+    var w = mapCanvas.width;
+    var h = mapCanvas.height;
+
+    // Clear
+    mapCtx.fillStyle = '#050505';
+    mapCtx.fillRect(0, 0, w, h);
+
+    // Grid
+    mapCtx.strokeStyle = 'rgba(0, 255, 65, 0.06)';
+    mapCtx.lineWidth = 0.5;
+    for (var gx = 0; gx < w; gx += 30) {
+      mapCtx.beginPath();
+      mapCtx.moveTo(gx, 0);
+      mapCtx.lineTo(gx, h);
+      mapCtx.stroke();
+    }
+    for (var gy = 0; gy < h; gy += 30) {
+      mapCtx.beginPath();
+      mapCtx.moveTo(0, gy);
+      mapCtx.lineTo(w, gy);
+      mapCtx.stroke();
+    }
+
+    // Draw continents
+    continents.forEach(function (points) {
+      mapCtx.beginPath();
+      mapCtx.moveTo(points[0][0], points[0][1]);
+      for (var i = 1; i < points.length; i++) {
+        mapCtx.lineTo(points[i][0], points[i][1]);
+      }
+      mapCtx.closePath();
+      mapCtx.fillStyle = 'rgba(0, 255, 65, 0.08)';
+      mapCtx.fill();
+      mapCtx.strokeStyle = 'rgba(0, 255, 65, 0.3)';
+      mapCtx.lineWidth = 1;
+      mapCtx.stroke();
+    });
+
+    // Animate nodes sequentially
+    animateNodes(0);
+  }
+
+  function animateNodes(index) {
+    if (index >= cities.length) {
+      // All nodes drawn, now draw convergence lines
+      setTimeout(function () {
+        drawConvergenceLines();
+      }, 500);
+      return;
+    }
+
+    var city = cities[index];
+
+    // Flash effect
+    var flashCount = 0;
+    var flashInterval = setInterval(function () {
+      drawCityNode(city, flashCount % 2 === 0);
+      flashCount++;
+      if (flashCount >= 6) {
+        clearInterval(flashInterval);
+        drawCityNode(city, true);
+        playMapPing();
+
+        mapStatus.innerHTML = '<span style="color:' + city.color + ';">NODE DETECTED: ' + city.name +
+          ' [' + city.x + ', ' + city.y + ']</span>';
+
+        setTimeout(function () {
+          animateNodes(index + 1);
+        }, 400);
+      }
+    }, 100);
+  }
+
+  function drawCityNode(city, visible) {
+    if (!visible) return;
+
+    // Outer glow
+    mapCtx.beginPath();
+    mapCtx.arc(city.x, city.y, 12, 0, Math.PI * 2);
+    mapCtx.fillStyle = city.color.replace(')', ',0.15)').replace('rgb', 'rgba').replace('#', '');
+    // Use a simpler approach for glow
+    mapCtx.shadowColor = city.color;
+    mapCtx.shadowBlur = 15;
+    mapCtx.fillStyle = 'rgba(0,0,0,0)';
+    mapCtx.fill();
+    mapCtx.shadowBlur = 0;
+
+    // Inner dot
+    mapCtx.beginPath();
+    mapCtx.arc(city.x, city.y, 4, 0, Math.PI * 2);
+    mapCtx.fillStyle = city.color;
+    mapCtx.fill();
+
+    // Ring
+    mapCtx.beginPath();
+    mapCtx.arc(city.x, city.y, 10, 0, Math.PI * 2);
+    mapCtx.strokeStyle = city.color;
+    mapCtx.lineWidth = 1;
+    mapCtx.stroke();
+
+    // Label
+    mapCtx.font = '10px Courier New';
+    mapCtx.fillStyle = city.color;
+    mapCtx.fillText(city.name, city.x + 14, city.y + 4);
+  }
+
+  function drawConvergenceLines() {
+    var target = cities[cities.length - 1]; // GUATEMALA
+    var sources = cities.slice(0, -1);
+    var lineIndex = 0;
+
+    mapStatus.innerHTML = '<span style="color:var(--magenta-neon);">TRIANGULANDO ORIGEN DEL VENDOR...</span>';
+
+    function drawNextLine() {
+      if (lineIndex >= sources.length) {
+        // Draw final red line and alert
+        setTimeout(drawFinalTrace, 600);
+        return;
+      }
+
+      var src = sources[lineIndex];
+      animateLine(src.x, src.y, target.x, target.y, 'rgba(0, 255, 65, 0.5)', function () {
+        lineIndex++;
+        drawNextLine();
+      });
+    }
+
+    drawNextLine();
+  }
+
+  function animateLine(x1, y1, x2, y2, color, callback) {
+    var steps = 30;
+    var step = 0;
+
+    var interval = setInterval(function () {
+      var progress = step / steps;
+      var cx = x1 + (x2 - x1) * progress;
+      var cy = y1 + (y2 - y1) * progress;
+
+      mapCtx.beginPath();
+      mapCtx.moveTo(x1, y1);
+      mapCtx.lineTo(cx, cy);
+      mapCtx.strokeStyle = color;
+      mapCtx.lineWidth = 1;
+      mapCtx.setLineDash([4, 4]);
+      mapCtx.stroke();
+      mapCtx.setLineDash([]);
+
+      step++;
+      if (step > steps) {
+        clearInterval(interval);
+        if (callback) callback();
+      }
+    }, 30);
+  }
+
+  function drawFinalTrace() {
+    var target = cities[cities.length - 1];
+
+    playAlertSound();
+
+    // Big red circle on Guatemala
+    mapCtx.beginPath();
+    mapCtx.arc(target.x, target.y, 20, 0, Math.PI * 2);
+    mapCtx.strokeStyle = '#ff003c';
+    mapCtx.lineWidth = 3;
+    mapCtx.shadowColor = '#ff003c';
+    mapCtx.shadowBlur = 20;
+    mapCtx.stroke();
+    mapCtx.shadowBlur = 0;
+
+    // Red crosshairs
+    mapCtx.strokeStyle = '#ff003c';
+    mapCtx.lineWidth = 1;
+    mapCtx.beginPath();
+    mapCtx.moveTo(target.x - 30, target.y);
+    mapCtx.lineTo(target.x + 30, target.y);
+    mapCtx.stroke();
+    mapCtx.beginPath();
+    mapCtx.moveTo(target.x, target.y - 30);
+    mapCtx.lineTo(target.x, target.y + 30);
+    mapCtx.stroke();
+
+    // Label
+    mapCtx.font = 'bold 12px Courier New';
+    mapCtx.fillStyle = '#ff003c';
+    mapCtx.fillText('▼ TARGET LOCATED', target.x - 55, target.y + 40);
+
+    mapStatus.innerHTML =
+      '<span class="glow-red" style="color:var(--red-alert);font-size:16px;font-weight:bold;">' +
+      '⚠ VENDOR LOCATED: ZONA 11 - COLEGIO CAPOUILLIEZ ⚠</span><br>' +
+      '<span style="color:var(--text-dim);font-size:11px;">Coordenadas: 14.6°N, 90.5°W | País: GUATEMALA | Confianza: 97.3%</span>';
+
+    mapCloseBtn.style.display = 'inline-block';
+  }
+
+  // ==================== FBI ALERT EVENT ====================
+  var fbiAlert = document.getElementById('fbi-alert');
+
+  function triggerFBIAlert() {
+    if (!osActive) return;
+    playAlertSound();
+    fbiAlert.classList.add('active');
+
+    // Flashing red border on body
+    document.body.style.animation = 'none';
+    var flashCount = 0;
+    var flashInterval = setInterval(function () {
+      fbiAlert.style.background = flashCount % 2 === 0
+        ? 'rgba(255, 0, 60, 0.15)'
+        : 'rgba(0, 0, 0, 0.96)';
+      flashCount++;
+      if (flashCount > 20) {
+        fbiAlert.style.background = 'rgba(0, 0, 0, 0.96)';
+        clearInterval(flashInterval);
+      }
+    }, 200);
+  }
+
+  function burnDrive() {
+    playGlitchSound();
+    fbiAlert.classList.remove('active');
+    printSystemLine('');
+    printSystemLine('🔥 [BURN] Drive quemado exitosamente. Evidencia eliminada.');
+    printOutputLine('  Trace neutralizado. Federal nodes desconectados.');
+    printDimLine('  Puedes continuar operando con normalidad.');
+    printSystemLine('');
+
+    // Reset threat level
+    threatLevel.textContent = '██░░░ LOW';
+    threatLevel.style.color = 'var(--red-alert)';
+
+    cmdInput.focus();
+
+    // Schedule another FBI alert in 90 seconds
+    fbiTimer = setTimeout(triggerFBIAlert, 90000);
+  }
+
+  window.burnDrive = burnDrive;
+
+  // ==================== START BOOT SEQUENCE ====================
+  // Small delay to let CSS load
+  setTimeout(function () {
+    initAudio();
+    runBootSequence();
+  }, 300);
+
+})();
+  </script>
 </body>
 </html>
